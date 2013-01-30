@@ -13,7 +13,7 @@
  */
 
 $GLOBALS['wp_tests_options'] = array(
-	'active_plugins' => array( basename( dirname( dirname( __FILE__ ) ) ) . '/widgets-master.php' ),
+	'active_plugins' => array( basename( dirname( dirname( __FILE__ ) ) ) . '/init.php' ),
 );
 
 require dirname( __FILE__ ) . '/lib/bootstrap.php';

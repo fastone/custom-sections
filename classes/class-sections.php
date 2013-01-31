@@ -151,14 +151,14 @@ class Sections {
 	 * */
 	public static function show_section( $id, $options = array() ) {
 		global $post, $section;
-		$options = get_option( 'sections_options' );
+		$sections_options = get_option( 'sections_options' );
 		$args = false;
 		$output = '';
 
 		if ( is_numeric( $id ) ) {
-			$args = array( 'p' => $id, 'post_type' => $options['post_type'] );
+			$args = array( 'p' => $id, 'post_type' => $sections_options['post_type'] );
 		} elseif ( is_string( $id ) ) {
-			$args = array( 'name' => $id, 'post_type' => $options['post_type'] );
+			$args = array( 'name' => $id, 'post_type' => $sections_options['post_type'] );
 		}
 
 		if ( $args ) {

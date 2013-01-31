@@ -13,10 +13,69 @@ class Sections {
 	 * @since 1.0.0
 	 * */
 	public function __construct( ) {
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 99 );
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 		add_shortcode( 'section', array( $this, 'sections_shortcode' ) );
+	}
 
+	/**
+	 * admin_init function
+	 *
+	 * @since 0.1
+	 * */
+	public function admin_init() {
+		// Register settings
+		register_setting( 'sections_options', 'sections_options', array( $this, 'sections_options_validate' ) );
+		add_settings_section( 'sections_main', __( 'Select post type to use as Sections post type' ), array( $this, 'sections_description' ), 'sections' );
+		add_settings_field( 'sections_post_type_field', __( 'Sections Post Type' ), array( $this, 'sections_post_type_field' ), 'sections', 'sections_main' );
+	}
+
+	/**
+	 * sections_options_validate function
+	 *
+	 * @since 0.1
+	 * */
+	public function sections_options_validate( $input ) {
+		return $input;
+	}
+
+	/**
+	 * sections_description function
+	 *
+	 * @since 0.1
+	 * */
+	public function sections_description() {
+		echo '<p>description...</p>';
+	}
+
+	/**
+	 * sections_post_type_field function
+	 *
+	 * @since 0.1
+	 * */
+	public function sections_post_type_field() {
+		$options = get_option( 'sections_options' );
+
+		$args = array( 'public' => true, '_builtin' => false );
+		$output = 'names';
+		$operator = 'and';
+		$post_types = get_post_types( $args, $output, $operator );
+
+		$html  = '<select id="sections_post_type" name="sections_options[post_type]">';
+		$html .= '<option value="">'.__( "Select post type" ).'</option>';
+
+		foreach ( $post_types  as $post_type ) {
+			$html .= '<option value="'.$post_type.'"';
+			if ( $post_type == $options['post_type'] ) {
+				$html .= 'selected="selected"';
+			}
+			$html .= '>'.$post_type.'</option>';
+		}
+
+		$html .= '</select>';
+
+		echo $html;
 	}
 
 	/**
@@ -25,13 +84,13 @@ class Sections {
 	 * @since 0.1
 	 * */
 	public function admin_head() {
-		if ( isset( $GLOBALS['post_type'] ) && $GLOBALS['post_type'] == 'section' ) {
+		$options = get_option( 'sections_options' );
+		if ( isset( $GLOBALS['post_type'] ) && $GLOBALS['post_type'] == $options['post_type'] ) {
 			if ( $GLOBALS['pagenow'] == 'post.php' ) {
-				add_meta_box( 'sections-shortcode', 'Shortcode', array( $this, 'shortcode_meta_box' ), 'section', 'normal', 'high' );
+				add_meta_box( 'sections-shortcode', 'Shortcode', array( $this, 'shortcode_meta_box' ), $options['post_type'], 'normal', 'high' );
 			}
 		}
 	}
-
 
 	/**
 	 * admin_menu function
@@ -66,16 +125,22 @@ class Sections {
 	 * @since 0.1
 	 * */
 	public function sections_shortcode( $args ) {
+		global $post;
+		$options = get_option( 'sections_options' );
 		$output = '';
-		if ( isset( $args['id'] ) && is_numeric( $args['id'] ) ) {
-			$id = $args['id'];
-			unset( $args['id'] );
-			$output = self::show_section( $id, $args );
-		} elseif ( isset( $args['name'] ) && is_string( $args['name'] ) ) {
-			$name = $args['name'];
-			unset( $args['name'] );
-			$output = self::show_section( $name, $args );
+
+		if ( $post->post_type !== $options['post_type'] ) {
+			if ( isset( $args['id'] ) && is_numeric( $args['id'] ) ) {
+				$id = $args['id'];
+				unset( $args['id'] );
+				$output = self::show_section( $id, $args );
+			} elseif ( isset( $args['name'] ) && is_string( $args['name'] ) ) {
+				$name = $args['name'];
+				unset( $args['name'] );
+				$output = self::show_section( $name, $args );
+			}
 		}
+
 		return $output;
 	}
 
@@ -85,15 +150,15 @@ class Sections {
 	 * @since 0.1
 	 * */
 	public static function show_section( $id, $options = array() ) {
-		//TODO: Add check to prevent that a section contains itself as shortcode...
 		global $post, $section;
+		$options = get_option( 'sections_options' );
 		$args = false;
 		$output = '';
 
 		if ( is_numeric( $id ) ) {
-			$args = array( 'p' => $id, 'post_type' => 'section' );
+			$args = array( 'p' => $id, 'post_type' => $options['post_type'] );
 		} elseif ( is_string( $id ) ) {
-			$args = array( 'name' => $id, 'post_type' => 'section' );
+			$args = array( 'name' => $id, 'post_type' => $options['post_type'] );
 		}
 
 		if ( $args ) {

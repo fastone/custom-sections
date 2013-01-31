@@ -3,7 +3,7 @@
 Plugin Name: Sections
 Plugin URI: http://www.jeroenvanwissen.nl/weblog/wordpress/sections
 Description: Sections is a WordPress plugin that gives you an alternative to the default Widgets. Sections are pieces of content to be used as shortcode or directly in your theme.
-Version: 0.1
+Version: 0.1.1
 Author: W!SSEN
 Author URI: http://jeroenvanwissen.nl/
 

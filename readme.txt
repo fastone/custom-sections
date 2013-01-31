@@ -4,7 +4,7 @@ Donate link: http://www.jeroenvanwissen.nl/weblog/wordpress/sections
 Tags: widgets, posttype
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 0.1
+Stable tag: 0.1.1
 
 Sections is a WordPress plugin that gives you an alternative to the default Widgets
 
@@ -23,6 +23,9 @@ The custom post type must be created by the user in the functions.php, or a plug
 == Screenshots ==
 
 == Changelog ==
+
+= 0.1.1 (2013-1-13) =
+* Removed Dutch locale
 
 = 0.1 (2013-1-13) =
 * Initial release

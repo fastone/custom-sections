@@ -6,15 +6,15 @@
  *
  *
  * Use in theme
- *	<?php show_section('<slug>', array('template' => 'basic')); ?>
- *	<?php show_section(<id>, array('template' => 'basic')); ?>
+ * <?php show_section('<slug>', array('template' => 'basic')); ?>
+ * <?php show_section(<id>, array('template' => 'basic')); ?>
  *
  * Use with shortcode
  *
  *  [section name="<slug>" template="basic"]
  *  [section id="<id>" template="basic"]
  *
- **/
+ * */
 ?>
 <?php global $section; if ( $section->have_posts() ): $section->the_post(); ?>
 

@@ -27,7 +27,7 @@ class Sections {
 	public function admin_init() {
 		// Register settings
 		register_setting( 'sections_options', 'sections_options', array( $this, 'sections_options_validate' ) );
-		add_settings_section( 'sections_main', __( 'Select post type to use as Sections post type' ), array( $this, 'sections_description' ), 'sections' );
+		add_settings_section( 'sections_main', __( 'Select the custom post type to use as Sections post type' ), array( $this, 'sections_description' ), 'sections' );
 		add_settings_field( 'sections_post_type_field', __( 'Sections Post Type' ), array( $this, 'sections_post_type_field' ), 'sections', 'sections_main' );
 	}
 
@@ -46,7 +46,7 @@ class Sections {
 	 * @since 0.1
 	 * */
 	public function sections_description() {
-		echo '<p>description...</p>';
+		echo '<p></p>';
 	}
 
 	/**

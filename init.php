@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Sections
-Plugin URI: http://jeroenvanwissen.nl/wordpress/sections-plugin
-Description: Sections is a WordPress plugin that gives you an alternative to the default Widgets
+Plugin URI: http://www.jeroenvanwissen.nl/weblog/wordpress/sections
+Description: Sections is a WordPress plugin that gives you an alternative to the default Widgets. Sections are pieces of content to be used as shortcode or directly in your theme.
 Version: 0.1
 Author: W!SSEN
 Author URI: http://jeroenvanwissen.nl/
@@ -20,29 +20,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-
-
-
-/*
-Sections Lite
-=============
-
-- Sections Lite has no custom post type of its own.
-  Choose post type to use as Section in the plugin configuration
-  So it can be used with Types plugin or any other CPT plugin
-- All other Sections features included
-
-Sections
-========
-
-- Show shortcode [section id='<section post id>' title='<section title>'] and <?php show_section(array('id' => <section post id>, 'title' => '<section title>')); ?> below each section edit post.
-- By default, <section title> will be rendered as <h2>, and the body content as-is ( <p> )
-- With the show_section variant, custom templates can be used to show data. section_<name>.php
-  <?php show_section(array('id' => <section post id>, 'template' => '<name>')); ?>
-  So custom fields can be used.
-- Sections edit post page will show all configured edit options that post type has configured. So featured image can be used too
-
 */
 
 setlocale( LC_ALL, 'nl_NL' );

@@ -107,7 +107,7 @@ class CustomSections {
 	 * @since 0.1
 	 * */
 	public function sections_menu() {
-		include SECTIONS_PATH . '/admin/settings.php';
+		include CUSTOMSECTIONS_PATH . '/admin/settings.php';
 	}
 
 	/**
@@ -116,7 +116,7 @@ class CustomSections {
 	 * @since 0.1
 	 * */
 	public function shortcode_meta_box() {
-		include SECTIONS_PATH . '/admin/shortcode.php';
+		include CUSTOMSECTIONS_PATH . '/admin/shortcode.php';
 	}
 
 	/**
@@ -209,8 +209,8 @@ class CustomSections {
 		if ( file_exists( STYLESHEETPATH . '/' . $filename ) )
 			get_template_part( $slug, $name );
 
-		elseif ( file_exists( SECTIONS_TEMPLATES_PATH . '/' . $filename ) )
-			load_template( SECTIONS_TEMPLATES_PATH . '/' . $filename, false );
+		elseif ( file_exists( CUSTOMSECTIONS_TEMPLATES_PATH . '/' . $filename ) )
+			load_template( CUSTOMSECTIONS_TEMPLATES_PATH . '/' . $filename, false );
 
 		else
 			get_template_part( $slug, $name );

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Sections class
+ * CustomSections class
  *
- * @package Sections
+ * @package CustomSections
  * */
-class Sections {
+class CustomSections {
 
 	/**
-	 * Sections constructor
+	 * CustomSections constructor
 	 *
 	 * @since 1.0.0
 	 * */
@@ -215,4 +215,4 @@ class Sections {
 		else
 			get_template_part( $slug, $name );
 	}
-} // END class Sections
+} // END class CustomSections

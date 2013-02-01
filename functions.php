@@ -6,5 +6,5 @@
  * @since 0.1
  * */
 function show_section( $id, $options = array() ) {
-	echo Sections::show_section( $id, $options );
+	echo CustomSections::show_section( $id, $options );
 }

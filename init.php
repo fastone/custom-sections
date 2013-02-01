@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Sections
-Plugin URI: http://www.jeroenvanwissen.nl/weblog/wordpress/sections
-Description: Sections is a WordPress plugin that gives you an alternative to the default Widgets. Sections are pieces of content to be used as shortcode or directly in your theme.
-Version: 0.1.1
+Plugin Name: Custom Sections
+Plugin URI: http://www.jeroenvanwissen.nl/weblog/wordpress/custom-sections
+Description: Custom Sections is a WordPress plugin that gives you an alternative to the default Widgets. Custom Sections are pieces of content to be used as shortcode or directly in your theme.
+Version: 0.2
 Author: W!SSEN
 Author URI: http://jeroenvanwissen.nl/
 
@@ -24,10 +24,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 $path = str_replace( '\\', '/', ( dirname( __FILE__ ) ) );
 
-define( 'SECTIONS_PATH', $path );
-define( 'SECTIONS_TEMPLATES_PATH', SECTIONS_PATH.'/templates' );
+define( 'CUSTOMSECTIONS_PATH', $path );
+define( 'CUSTOMSECTIONS_TEMPLATES_PATH', CUSTOMSECTIONS_PATH.'/templates' );
 
-require_once SECTIONS_PATH . '/functions.php';
-require_once SECTIONS_PATH . '/classes/class-sections.php';
+require_once CUSTOMSECTIONS_PATH . '/functions.php';
+require_once CUSTOMSECTIONS_PATH . '/classes/class-custom-sections.php';
 
-$sections = new Sections();
+$customsections = new CustomSections();

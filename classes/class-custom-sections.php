@@ -4,6 +4,8 @@
  * CustomSections class
  *
  * @package CustomSections
+ * @since 0.1
+ * @version 0.4
  * */
 class CustomSections {
 
@@ -11,7 +13,7 @@ class CustomSections {
 	 * CustomSections constructor
 	 *
 	 * @since 0.1
-	 * @version 0.3
+	 * @version 0.4
 	 * */
 	public function __construct( ) {
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -19,19 +21,45 @@ class CustomSections {
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 		add_shortcode( 'section', array( $this, 'sections_shortcode' ) );
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
+		add_action( 'init', array( $this, 'register_post_type' ) );
+	}
+
+	/**
+	 * register_post_type function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public function register_post_type()
+	{
+		$options = get_option( 'sections_options' );
+
+		if ( $options['internal_post_type'] === true && $options['post_type'] == 'custom-sections' ) {
+			$args = array(
+				'exclude_from_search' => true,
+				'show_ui' => true,
+				'public' => false,
+				'label' => 'Sections',
+				'rewrite' => false,
+				'query_var' => false,
+				'show_in_nav_menus' => false
+			);
+			register_post_type( 'custom-sections', $args );
+		}
 	}
 
 	/**
 	 * admin_init function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public function admin_init() {
 		// Register settings
 		register_setting( 'sections_options', 'sections_options', array( $this, 'sections_options_validate' ) );
 		add_settings_section( 'sections_main', __( 'Select the custom post type to use as Sections post type' ), array( $this, 'sections_description' ), 'sections' );
-		add_settings_field( 'sections_post_type_field', __( 'Sections Post Type' ), array( $this, 'sections_post_type_field' ), 'sections', 'sections_main' );
+		add_settings_field( 'sections_internal_post_type_field', __( 'Use internal post type' ), array( $this, 'sections_internal_post_type_field' ), 'sections', 'sections_main' );
+		add_settings_field( 'sections_post_type_field', __( 'Existing post type' ), array( $this, 'sections_post_type_field' ), 'sections', 'sections_main' );
 	}
 
 	/**
@@ -49,9 +77,13 @@ class CustomSections {
 	 * sections_options_validate function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public function sections_options_validate( $input ) {
+		if (isset($input['internal_post_type']) && $input['internal_post_type'] == 'on') {
+			$input['internal_post_type'] = true;
+			$input['post_type'] = 'custom-sections';
+		}
 		return $input;
 	}
 
@@ -62,7 +94,26 @@ class CustomSections {
 	 * @version 0.1
 	 * */
 	public function sections_description() {
-		echo '<p></p>';
+		echo '<p>Choose to use internal custom post type ( "custom-sections" ) or select an existing custom post type.</p>';
+	}
+
+	/**
+	 * sections_internal_post_type_field function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 * */
+	public function sections_internal_post_type_field() {
+		$options = get_option( 'sections_options' );
+
+		$html = '<input type="checkbox" ';
+		$html .= 'name="sections_options[internal_post_type]" ';
+		if (isset($options['internal_post_type']) && $options['internal_post_type'] === true) {
+			$html .= 'checked="checked"';
+		}
+		$html .= '/> ( "custom-sections" )';
+
+		echo $html;
 	}
 
 	/**
@@ -99,13 +150,13 @@ class CustomSections {
 	 * admin_menu function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public function admin_head() {
 		$options = get_option( 'sections_options' );
 		if ( isset( $GLOBALS['post_type'] ) && $GLOBALS['post_type'] == $options['post_type'] ) {
 			if ( $GLOBALS['pagenow'] == 'post.php' ) {
-				add_meta_box( 'sections-shortcode', 'Shortcode', array( $this, 'shortcode_meta_box' ), $options['post_type'], 'normal', 'high' );
+				add_meta_box( 'sections-shortcode', 'Custom Section Shortcode', array( $this, 'shortcode_meta_box' ), $options['post_type'], 'normal', 'high' );
 			}
 		}
 	}
@@ -114,10 +165,10 @@ class CustomSections {
 	 * admin_menu function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public function admin_menu() {
-		add_options_page( 'Sections', 'Sections', 'manage_options', 'sections', array( $this, 'sections_menu' ) );
+		add_options_page( 'Custom Sections', 'Custom Sections', 'manage_options', 'sections', array( $this, 'sections_menu' ) );
 	}
 
 	/**
@@ -170,7 +221,7 @@ class CustomSections {
 	 * show_section function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4
 	 * */
 	public static function show_section( $id, $options = array() ) {
 		global $post, $section;
@@ -190,10 +241,14 @@ class CustomSections {
 			// TODO: Add filters for security of filename etc..
 			if ( isset( $options['template'] ) && !empty( $options['template'] ) ) {
 
-				ob_start();
-				self::load_template( 'sections', $options['template'] );
-				$output = ob_get_contents();
-				ob_end_clean();
+				if ( $section->have_posts() ) {
+					$section->the_post();
+					
+					ob_start();
+					self::load_template( 'section', $options['template'] );
+					$output = ob_get_contents();
+					ob_end_clean();
+				}
 
 			} else {
 
@@ -212,6 +267,24 @@ class CustomSections {
 		wp_reset_postdata();
 
 		return $output;
+	}
+
+	/**
+	 * get_section_templates function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public static function get_section_templates() {
+		$page_templates = array();
+		$files = (array) wp_get_theme()->get_files( 'php', 1 );
+
+		foreach ( $files as $file => $full_path ) {
+			if ( ! preg_match( '|section-(.*).php$|mi', $full_path, $match ) )
+				continue;
+			$page_templates[ $file ] = ( $match[1] );
+		}
+		return $page_templates;
 	}
 
 	/**

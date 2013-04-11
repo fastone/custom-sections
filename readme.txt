@@ -24,6 +24,13 @@ The custom post type must be created by the user in the functions.php, or a plug
 
 == Changelog ==
 
+= 0.4-devel (2013-4-13) =
+* Added internal custom post type ( 'custom-sections' )
+* Added template functionality to use custom templates for output
+* Added template selection in widget
+* Fixed settings menu name
+* Fixed show only published sections in widget
+
 = 0.3 (2013-3-20) =
 * Added Custom Sections Widget
 
@@ -39,7 +46,4 @@ The custom post type must be created by the user in the functions.php, or a plug
 == TODO's ==
 
 * Create documentation
-* Add some sample templates
-* Add optional internal custom post type
-* Add template selection in widghet
 * Add TinyMCE integration for shortcodes in pages/posts/CPTs

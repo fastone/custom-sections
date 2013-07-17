@@ -5,13 +5,13 @@
 
 			<fieldset>
 				<label>Custom Section Post:</label>
-				<select id="custom_section_name">
+				<select id="custom_section_id">
 					<option value="" selected="selected"><?php _e("Select Custom Section"); ?></option>
 					<?php
 					$sections = CustomSections::get_section_posts();
 					foreach ($sections as $section):
 					?>
-					<option value="<?php echo $section['name']; ?>"><?php echo $section['title']; ?></option>
+					<option value="<?php echo $section['id']; ?>"><?php echo $section['title']; ?></option>
 					<?php
 					endforeach;
 	                ?>

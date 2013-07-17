@@ -110,7 +110,7 @@ class CustomSectionsWidget extends WP_Widget {
 	 * @since 0.3
 	 * @version 0.3
 	 * */
-	protected function load_template( $slug, $name = null ) {
+	protected static function load_template( $slug, $name = null ) {
 		$filename = $slug . ( ( $name != null ) ? '-' . $name : '' ) . '.php';
 
 		if ( file_exists( STYLESHEETPATH . '/' . $filename ) )

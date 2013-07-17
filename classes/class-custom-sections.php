@@ -22,6 +22,12 @@ class CustomSections {
 		add_shortcode( 'section', array( $this, 'sections_shortcode' ) );
 		add_action( 'widgets_init', array( $this, 'register_widget' ) );
 		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_action( 'media_buttons_context',  array( $this, 'media_buttons' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_add_script') );
+
+		if(in_array(basename($_SERVER['PHP_SELF']), array('post.php', 'page.php', 'page-new.php', 'post-new.php'))){
+			add_action('admin_footer',  array( $this, 'add_popup'));
+		}
 	}
 
 	/**
@@ -73,6 +79,34 @@ class CustomSections {
 		register_widget( 'CustomSectionsWidget' );
 	}
 
+	/**
+	 * admin_add_script function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public function admin_add_script()
+	{
+		wp_enqueue_script('custom-sections', plugins_url('../js/custom-sections.js', __FILE__), array('jquery'), false, true);
+		wp_enqueue_style('custom-sections', plugins_url('../css/custom-sections.css', __FILE__));
+	}
+
+	/**
+	 * media_buttons function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public function media_buttons($context)
+	{
+		$context .= '<a href="#TB_inline?width=400&inlineId=select_custom_section" class="thickbox button" id="add_custom_section" title="' . __("Add Custom Section") . '"><span class="custom_section_icon "></span> ' . __("Add Custom Section") . '</a>';
+//		$context .= '<a href="#" id="insert-section-button" class="button insert-section add_section" data-editor="content" title="Add Section"><span class="wp-media-buttons-icon"></span> Add Section</a>';
+		return $context;
+	}
+
+	public function add_popup() {
+		include CUSTOMSECTIONS_PATH . '/admin/popup.php';
+	}
 	/**
 	 * sections_options_validate function
 	 *
@@ -288,6 +322,38 @@ class CustomSections {
 	}
 
 	/**
+	 * get_section_posts function
+	 *
+	 * @since 0.4
+	 * @version 0.4
+	 **/
+	public static function get_section_posts()
+	{
+		global $post;
+		$sections_posts = array();
+		$sections_options = get_option( 'sections_options' );
+		$query = new WP_Query(array(
+			'post_type' => $sections_options['post_type'],
+			'posts_per_page' => -1,
+			'post_status' => 'publish'
+		));
+
+		if ($query->have_posts()) {
+			while ( $query->have_posts() ) {
+					$query->the_post();
+					$sections_posts[] = array(
+						'id' => $post->ID,
+						'name' => $post->post_name,
+						'title' => $post->post_title
+					);
+			}
+		}
+		wp_reset_query();
+
+		return $sections_posts;
+	}
+
+	/**
 	 * Load Template
 	 *
 	 * If exists, load template file from theme
@@ -300,7 +366,7 @@ class CustomSections {
 	 * @since 0.1
 	 * @version 0.2
 	 * */
-	protected function load_template( $slug, $name = null ) {
+	protected static function load_template( $slug, $name = null ) {
 		$filename = $slug . ( ( $name != null ) ? '-' . $name : '' ) . '.php';
 
 		if ( file_exists( STYLESHEETPATH . '/' . $filename ) )

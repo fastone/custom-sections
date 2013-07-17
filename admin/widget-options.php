@@ -32,7 +32,7 @@
 	<select name="<?php echo $this->get_field_name( 'customsectiontemplate' ); ?>" id="<?php echo $this->get_field_id( 'customsectiontemplate' ); ?>" class="widefat">
 		<option value=""><?php _e('Select Template', 'customsections' ); ?></option>
 		<?php
-		$templates = get_section_templates();
+		$templates = CustomSections::get_section_templates();
 		foreach ($templates as $file => $template) {
 			if ($instance['customsectiontemplate'] == $template) {
 				$selected = 'selected="selected"';

@@ -5,7 +5,7 @@
 	$name  = $section->post_name;
 ?>
 <div id="section-shortcode-display">
-	<p><?php _('Use the shortcode to use this custom section in another post, or use the php function call to use it directly in your theme. Change 'default' to any other custom created section-&lt;template&gt;.php template file in your theme folder.', 'custom-sections'); ?></p>
+	<p><?php _e('Use the shortcode to use this custom section in another post, or use the php function call to use it directly in your theme. Change &quot;default&quot; to any other custom created section-&lt;template&gt;.php template file in your theme folder.', 'custom-sections'); ?></p>
 	<div class="section-shortcode">
 		<span id="section-shortcode">
 			<pre>[section id="<?php echo $pid; ?>" template="default"]</pre>

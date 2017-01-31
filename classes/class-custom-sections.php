@@ -5,7 +5,7 @@
  *
  * @package CustomSections
  * @since 0.1
- * @version 0.4.4
+ * @version 0.4.8
  * */
 class CustomSections {
 
@@ -229,26 +229,49 @@ class CustomSections {
 	 * sections_shortcode function
 	 *
 	 * @since 0.1
-	 * @version 0.1
+	 * @version 0.4.7
 	 * */
 	public function sections_shortcode( $args ) {
-		global $post;
-		$options = get_option( 'sections_options' );
 		$output = '';
 
-		if ( $post->post_type !== $options['post_type'] ) {
-			if ( isset( $args['id'] ) && is_numeric( $args['id'] ) ) {
-				$id = $args['id'];
-				unset( $args['id'] );
-				$output = self::show_section( $id, $args );
-			} elseif ( isset( $args['name'] ) && is_string( $args['name'] ) ) {
-				$name = $args['name'];
-				unset( $args['name'] );
-				$output = self::show_section( $name, $args );
-			}
+		if ( isset( $args['id'] ) && is_numeric( $args['id'] ) ) {
+			$id = $args['id'];
+			unset( $args['id'] );
+			$output = self::show_section( $id, $args );
+		} elseif ( isset( $args['name'] ) && is_string( $args['name'] ) ) {
+			$name = $args['name'];
+			unset( $args['name'] );
+			$output = self::show_section( $name, $args );
 		}
 
 		return $output;
+	}
+
+	/**
+	 * show_section function
+	 *
+	 * @since 0.4.8
+	 * @version 0.4.8
+	 * */
+	public static function section_exists( $id ) {
+		global $post;
+		$sections_options = get_option( 'sections_options' );
+		$args = false;
+		$have_posts = false;
+
+		if ( is_numeric( $id ) ) {
+			$args = array( 'p' => $id, 'post_type' => $sections_options['post_type'] );
+		} elseif ( is_string( $id ) ) {
+			$args = array( 'name' => $id, 'post_type' => $sections_options['post_type'] );
+		}
+		
+		if ( $args ) {
+			$section = new WP_Query( $args );
+			$have_posts = $section->have_posts();
+			wp_reset_postdata();
+		}
+
+		return $have_posts;
 	}
 
 	/**
@@ -277,7 +300,7 @@ class CustomSections {
 
 				if ( $section->have_posts() ) {
 					$section->the_post();
-					
+
 					ob_start();
 					self::load_template( 'section', $options['template'] );
 					$output = ob_get_contents();
@@ -375,9 +398,13 @@ class CustomSections {
 	 * @uses load_template()
 	 * @uses get_template_part()
 	 * @since 0.1
-	 * @version 0.2
+	 * @version 0.4.5
 	 * */
 	protected static function load_template( $slug, $name = null ) {
+
+		// Extra filter to remove html special chars
+		$name = preg_replace( "/&#?[a-z0-9]{2,8};/i", "", $name );
+
 		$filename = $slug . ( ( $name != null ) ? '-' . $name : '' ) . '.php';
 
 		if ( file_exists( STYLESHEETPATH . '/' . $filename ) )
